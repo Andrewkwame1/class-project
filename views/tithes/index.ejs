@@ -1,0 +1,89 @@
+<%- include('../partials/header', { title: 'Tithe ' + year, activePage: 'tithes' }) %>
+
+<div class="container">
+  <div class="tithe-verse">
+    <p class="tithe-verse-text">You shall be like a watered Garden</p>
+    <p class="tithe-verse-ref">Isaiah 58:11</p>
+  </div>
+
+  <div class="card-header">
+    <h2>Tithe — <%= year %></h2>
+    <a href="/tithes/record?year=<%= year %>" class="btn btn-primary">+ Record Tithe</a>
+  </div>
+
+  <form class="search-bar" method="GET" action="/tithes">
+    <select name="year" class="filter-dept" onchange="this.form.submit()">
+      <% years.forEach(function(y) { %>
+        <option value="<%= y %>" <%= y === year ? 'selected' : '' %>><%= y %></option>
+      <% }) %>
+    </select>
+    <input type="text" name="search" placeholder="Search member, family, or phone..." value="<%= search %>">
+    <input type="text" name="department" class="filter-dept" placeholder="Filter by department..." value="<%= department %>">
+    <button type="submit" class="btn btn-primary">Filter</button>
+    <% if (search || department) { %>
+      <a href="/tithes?year=<%= year %>" class="btn btn-secondary">Clear</a>
+    <% } %>
+  </form>
+
+  <div class="card">
+    <% if (rows.length === 0) { %>
+      <div class="empty-state">
+        <p>No members found for this year.</p>
+        <a href="/members/create" class="btn btn-primary">Add a Member</a>
+      </div>
+    <% } else { %>
+      <p class="tithe-year-total">Year total: <strong><%= yearTotal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %></strong></p>
+      <div class="table-container tithe-table-wrap">
+        <table class="tithe-table">
+          <thead>
+            <tr>
+              <th>Member</th>
+              <th>Family</th>
+              <th>Department</th>
+              <th>Telephone</th>
+              <% monthLabels.forEach(function(label) { %>
+                <th class="tithe-month"><%= label %></th>
+              <% }) %>
+              <th>Total</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% rows.forEach(function(row) { %>
+              <tr>
+                <td>
+                  <a href="/members/<%= row.member._id %>" class="member-cell-link">
+                    <%= row.member.firstName %> <%= row.member.lastName %>
+                  </a>
+                </td>
+                <td><%= row.member.family || '—' %></td>
+                <td><%= row.member.department || '—' %></td>
+                <td><%= row.member.phone || '—' %></td>
+                <% monthKeys.forEach(function(key) { %>
+                  <td class="tithe-amount <%= row.months[key] ? '' : 'tithe-empty' %>">
+                    <%= row.months[key] ? row.months[key].toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '—' %>
+                  </td>
+                <% }) %>
+                <td class="tithe-total"><%= row.total ? row.total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '—' %></td>
+                <td>
+                  <div class="actions">
+                    <a href="/tithes/record?member=<%= row.member._id %>&year=<%= year %>" class="btn btn-sm btn-primary">Record</a>
+                    <% if (row.hasRecord) { %>
+                      <form action="/tithes/delete" method="POST" class="inline-form" onsubmit="return confirm('Delete this year\'s tithe record?')">
+                        <input type="hidden" name="memberId" value="<%= row.member._id %>">
+                        <input type="hidden" name="year" value="<%= year %>">
+                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                      </form>
+                    <% } %>
+                  </div>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

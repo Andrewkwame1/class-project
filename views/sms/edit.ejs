@@ -1,0 +1,63 @@
+<%- include('../partials/header', { title: 'Edit SMS Alert', activePage: 'sms' }) %>
+
+<div class="container">
+  <div class="card-header">
+    <h2>Edit SMS Alert</h2>
+    <a href="/sms" class="btn btn-secondary">← Back</a>
+  </div>
+
+  <div class="card">
+    <form action="/sms/<%= alert._id %>/edit" method="POST">
+      <div class="form-group">
+        <label>Internal Title (Not sent in SMS) *</label>
+        <input type="text" name="title" value="<%= alert.title %>" required>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Audience</label>
+          <select name="audience" id="audienceSelect" class="audience-select">
+            <option value="Entire church" <%= alert.audience === 'Entire church' ? 'selected' : '' %>>Entire church</option>
+            <option value="Men" <%= alert.audience === 'Men' ? 'selected' : '' %>>Men</option>
+            <option value="Women" <%= alert.audience === 'Women' ? 'selected' : '' %>>Women</option>
+            <option value="Youth" <%= alert.audience === 'Youth' ? 'selected' : '' %>>Youth</option>
+            <option value="Children" <%= alert.audience === 'Children' ? 'selected' : '' %>>Children</option>
+            <option value="Department" <%= alert.audience === 'Department' ? 'selected' : '' %>>Specific Department</option>
+            <option value="Branch" <%= alert.audience === 'Branch' ? 'selected' : '' %>>Specific Branch</option>
+          </select>
+        </div>
+        <div class="form-group audience-target-group" id="audienceTargetGroup" <%= ['Department', 'Branch'].includes(alert.audience) ? '' : 'hidden' %>>
+          <label id="audienceTargetLabel"><%= alert.audience === 'Department' ? 'Department Name' : (alert.audience === 'Branch' ? 'Branch Name' : 'Target Name') %></label>
+          <input type="text" name="audienceTarget" value="<%= alert.audienceTarget %>" placeholder="Enter target name">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>SMS Message *</label>
+        <textarea name="message" rows="4" required><%= alert.message %></textarea>
+        <small class="text-muted">SMS messages are typically limited to 160 characters per segment.</small>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Status</label>
+          <select name="status">
+            <option value="draft" <%= alert.status === 'draft' ? 'selected' : '' %>>Draft</option>
+            <option value="scheduled" <%= alert.status === 'scheduled' ? 'selected' : '' %>>Scheduled</option>
+            <option value="sent" <%= alert.status === 'sent' ? 'selected' : '' %>>Sent</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Scheduled Date (Optional)</label>
+          <input type="date" name="scheduledDate" value="<%= alert.scheduledDate ? alert.scheduledDate.toISOString().split('T')[0] : '' %>">
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-success">Update SMS Alert</button>
+      <a href="/sms" class="btn btn-secondary">Cancel</a>
+    </form>
+  </div>
+</div>
+
+<script src="/js/audience-select.js"></script>
+<%- include('../partials/footer') %>

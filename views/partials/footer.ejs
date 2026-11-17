@@ -1,0 +1,54 @@
+<% if (typeof user !== 'undefined' && user) { %>
+    </main>
+  </div>
+</div>
+<script>
+  (function () {
+    var sidebar = document.getElementById('sidebar');
+    var overlay = document.getElementById('sidebarOverlay');
+    var menuToggle = document.getElementById('menuToggle');
+    var sidebarClose = document.getElementById('sidebarClose');
+
+    function openSidebar() {
+      sidebar.classList.add('open');
+      overlay.classList.add('open');
+      document.body.classList.add('sidebar-open');
+    }
+
+    function closeSidebar() {
+      sidebar.classList.remove('open');
+      overlay.classList.remove('open');
+      document.body.classList.remove('sidebar-open');
+    }
+
+    if (menuToggle) menuToggle.addEventListener('click', openSidebar);
+    if (sidebarClose) sidebarClose.addEventListener('click', closeSidebar);
+    if (overlay) overlay.addEventListener('click', closeSidebar);
+
+    document.querySelectorAll('.sidebar-submenu-toggle').forEach(function (toggle) {
+      toggle.addEventListener('click', function (e) {
+        e.preventDefault();
+        var submenu = this.nextElementSibling;
+        if (submenu && submenu.classList.contains('sidebar-submenu')) {
+          submenu.classList.toggle('open');
+          var arrow = this.querySelector('.submenu-arrow');
+          if (arrow) {
+            arrow.style.transform = submenu.classList.contains('open') ? 'rotate(180deg)' : '';
+            arrow.style.transition = 'transform 0.3s ease';
+          }
+        }
+      });
+    });
+
+    document.querySelectorAll('.sidebar-link:not(.sidebar-submenu-toggle), .submenu-link').forEach(function (link) {
+      link.addEventListener('click', function () {
+        if (window.innerWidth <= 768) closeSidebar();
+      });
+    });
+  })();
+</script>
+<% } else { %>
+</main>
+<% } %>
+</body>
+</html>

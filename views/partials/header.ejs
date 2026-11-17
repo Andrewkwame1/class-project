@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= typeof title !== 'undefined' ? title : 'Church Management System' %></title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<% if (user) {
+  const displayName = user.fullName || user.username;
+  const nameParts = displayName.trim().split(/\s+/);
+  const initials = nameParts.length > 1
+    ? (nameParts[0][0] + nameParts[nameParts.length - 1][0]).toUpperCase()
+    : displayName.substring(0, 2).toUpperCase();
+%>
+<div class="app-layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-top">
+      <a href="/members" class="sidebar-brand">
+        <span class="sidebar-brand-title">DWAD L200</span>
+        <span class="sidebar-brand-sub">Church Management</span>
+      </a>
+      <button type="button" class="sidebar-close" id="sidebarClose" aria-label="Close menu">&times;</button>
+    </div>
+
+    <nav class="sidebar-nav">
+      <ul class="sidebar-links">
+        <li class="has-submenu">
+          <a href="#" class="sidebar-link sidebar-submenu-toggle<%= typeof activePage !== 'undefined' && ['members', 'create', 'visitor-create', 'tithes'].includes(activePage) ? ' active' : '' %>">
+            <span class="sidebar-icon" aria-hidden="true">&#9776;</span>
+            Members
+            <span class="submenu-arrow" aria-hidden="true" style="margin-left: auto; transition: transform 0.3s ease;">&#9662;</span>
+          </a>
+          <ul class="sidebar-submenu<%= typeof activePage !== 'undefined' && ['members', 'create', 'visitor-create', 'tithes'].includes(activePage) ? ' open' : '' %>">
+            <li>
+              <a href="/members" class="submenu-link<%= typeof activePage !== 'undefined' && activePage === 'members' ? ' active' : '' %>">Members</a>
+            </li>
+            <li>
+              <a href="/members/create" class="submenu-link<%= typeof activePage !== 'undefined' && activePage === 'create' ? ' active' : '' %>">Add New Member</a>
+            </li>
+            <li>
+              <a href="/visitors/create" class="submenu-link<%= typeof activePage !== 'undefined' && activePage === 'visitor-create' ? ' active' : '' %>">Visitor Registration</a>
+            </li>
+            <li>
+              <a href="/tithes" class="submenu-link<%= typeof activePage !== 'undefined' && activePage === 'tithes' ? ' active' : '' %>">Tithe</a>
+            </li>
+          </ul>
+        </li>
+        <li class="has-submenu">
+          <a href="#" class="sidebar-link sidebar-submenu-toggle<%= typeof activePage !== 'undefined' && ['announcements', 'devotionals', 'birthdays', 'sms'].includes(activePage) ? ' active' : '' %>">
+            <span class="sidebar-icon" aria-hidden="true">📢</span>
+            Announcement
+            <span class="submenu-arrow" aria-hidden="true" style="margin-left: auto; transition: transform 0.3s ease;">&#9662;</span>
+          </a>
+          <ul class="sidebar-submenu<%= typeof activePage !== 'undefined' && ['announcements', 'devotionals', 'birthdays', 'sms'].includes(activePage) ? ' open' : '' %>">
+            <li>
+              <a href="/birthdays" class="submenu-link<%= typeof activePage !== 'undefined' && activePage === 'birthdays' ? ' active' : '' %>">Birthday Alert</a>
+            </li>
+            <li>
+              <a href="/announcements" class="submenu-link<%= typeof activePage !== 'undefined' && activePage === 'announcements' ? ' active' : '' %>">Weekly announcement</a>
+            </li>
+            <li>
+              <a href="/devotionals" class="submenu-link<%= typeof activePage !== 'undefined' && activePage === 'devotionals' ? ' active' : '' %>">Word to go Devotional</a>
+            </li>
+            <li>
+              <a href="/sms" class="submenu-link<%= typeof activePage !== 'undefined' && activePage === 'sms' ? ' active' : '' %>">SMS Alert</a>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a href="/settings" class="sidebar-link<%= typeof activePage !== 'undefined' && activePage === 'settings' ? ' active' : '' %>">
+            <span class="sidebar-icon" aria-hidden="true">&#9881;</span>
+            Settings
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="sidebar-user">
+      <% if (user.profileImage) { %>
+        <img src="<%= user.profileImage %>" alt="User Avatar" class="user-avatar" style="object-fit: cover;">
+      <% } else { %>
+        <div class="user-avatar" aria-hidden="true"><%= initials %></div>
+      <% } %>
+      <div class="user-details">
+        <span class="user-name"><%= displayName %></span>
+        <span class="user-role"><%= user.role %></span>
+      </div>
+      <a href="/auth/logout" class="sidebar-logout">Logout</a>
+    </div>
+  </aside>
+
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <div class="main-wrapper">
+    <header class="mobile-header">
+      <button type="button" class="menu-toggle" id="menuToggle" aria-label="Open menu">&#9776;</button>
+      <span class="mobile-title"><%= typeof title !== 'undefined' ? title : 'Church Management' %></span>
+    </header>
+
+    <main class="main-content">
+<% } else { %>
+<main>
+<% } %>
+  <% if (error) { %>
+    <div class="container">
+      <div class="alert alert-error"><%= error %></div>
+    </div>
+  <% } %>
+  <% if (success) { %>
+    <div class="container">
+      <div class="alert alert-success"><%= success %></div>
+    </div>
+  <% } %>

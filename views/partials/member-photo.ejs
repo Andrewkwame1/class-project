@@ -1,0 +1,35 @@
+<% 
+  const photoSrc = typeof member !== 'undefined' && member && member.photo ? member.photo : '';
+  const firstInitial = typeof member !== 'undefined' && member && member.firstName ? member.firstName.charAt(0) : '';
+  const lastInitial = typeof member !== 'undefined' && member && member.lastName ? member.lastName.charAt(0) : '';
+  const formAction = typeof photoAction !== 'undefined' ? photoAction : '';
+  const showRemove = photoSrc ? true : false;
+%>
+<div class="member-photo-upload" data-photo-upload>
+  <% if (formAction) { %>
+  <form action="<%= formAction %>" method="POST" enctype="multipart/form-data">
+  <% } %>
+    <label class="member-photo-label <%= photoSrc ? 'has-photo' : '' %>" for="memberPhotoInput">
+      <img class="member-photo-preview" src="<%= photoSrc || '' %>" alt="Member photo" <%= photoSrc ? '' : 'hidden' %>>
+      <div class="member-photo-placeholder" <%= photoSrc ? 'hidden' : '' %>>
+        <% if (firstInitial || lastInitial) { %>
+          <span class="member-photo-initials"><%= firstInitial %><%= lastInitial %></span>
+        <% } else { %>
+          <span class="member-photo-initials" style="font-size: 2rem;">📷</span>
+        <% } %>
+        <span class="member-photo-hint">Click to upload</span>
+      </div>
+      <span class="member-photo-overlay">📷 Change photo</span>
+    </label>
+    <input type="file" class="member-photo-input" id="memberPhotoInput" name="photo" accept="image/*" hidden>
+    <input type="hidden" name="removePhoto" value="0">
+    <div class="member-photo-actions" <%= photoSrc ? '' : 'hidden' %>>
+      <% if (formAction) { %>
+        <button type="submit" class="btn btn-primary btn-sm">Save Photo</button>
+      <% } %>
+      <button type="button" class="btn btn-secondary btn-sm member-photo-remove">Remove</button>
+    </div>
+  <% if (formAction) { %>
+  </form>
+  <% } %>
+</div>

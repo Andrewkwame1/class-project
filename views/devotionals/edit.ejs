@@ -1,0 +1,69 @@
+<%- include('../partials/header', { title: 'Edit Devotional', activePage: 'devotionals' }) %>
+
+<div class="container">
+  <div class="card-header">
+    <h2>Edit Word to Go Devotional</h2>
+    <a href="/devotionals" class="btn btn-secondary">← Back</a>
+  </div>
+
+  <div class="card">
+    <form action="/devotionals/<%= devotional._id %>/edit" method="POST">
+      <div class="form-group">
+        <label>Title *</label>
+        <input type="text" name="title" value="<%= devotional.title %>" required>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Bible Verse / Reference</label>
+          <input type="text" name="bibleVerse" value="<%= devotional.bibleVerse %>">
+        </div>
+        <div class="form-group">
+          <label>Author / Speaker</label>
+          <input type="text" name="author" value="<%= devotional.author %>">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Scripture Text</label>
+        <textarea name="scriptureText" rows="3"><%= devotional.scriptureText %></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Message / Devotional Content *</label>
+        <textarea name="message" rows="8" required><%= devotional.message %></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Prayer</label>
+        <textarea name="prayer" rows="3"><%= devotional.prayer %></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Reflection Question</label>
+        <textarea name="reflectionQuestion" rows="2"><%= devotional.reflectionQuestion %></textarea>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Publication Date</label>
+          <input type="date" name="publicationDate" value="<%= devotional.publicationDate ? devotional.publicationDate.toISOString().split('T')[0] : '' %>">
+        </div>
+        <div class="form-group">
+          <label>Scheduled Date</label>
+          <input type="date" name="scheduledDate" value="<%= devotional.scheduledDate ? devotional.scheduledDate.toISOString().split('T')[0] : '' %>">
+        </div>
+      </div>
+
+      <div class="form-group checkbox-row">
+        <input type="checkbox" name="isPublished" id="isPublished" <%= devotional.isPublished ? 'checked' : '' %>>
+        <label for="isPublished">Publish this devotional</label>
+      </div>
+
+      <button type="submit" class="btn btn-success">Update Devotional</button>
+      <a href="/devotionals" class="btn btn-secondary">Cancel</a>
+    </form>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,72 @@
+<%- include('../partials/header', { title: 'Birthday Alerts', activePage: 'birthdays' }) %>
+
+<div class="container">
+  <div class="card-header">
+    <h2>Birthday Alerts</h2>
+  </div>
+
+  <div class="card" style="margin-bottom: 1.5rem;">
+    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+      <a href="/birthdays?tab=today" class="btn <%= tab === 'today' ? 'btn-primary' : 'btn-secondary' %>">🎂 Today's Birthdays</a>
+      <a href="/birthdays?tab=week" class="btn <%= tab === 'week' ? 'btn-primary' : 'btn-secondary' %>">🎉 This Week</a>
+      <a href="/birthdays?tab=month" class="btn <%= tab === 'month' ? 'btn-primary' : 'btn-secondary' %>">🎈 This Month</a>
+      <a href="/birthdays?tab=upcoming" class="btn <%= tab === 'upcoming' ? 'btn-primary' : 'btn-secondary' %>">📅 Upcoming (30 Days)</a>
+    </div>
+  </div>
+
+  <form class="search-bar" method="GET" action="/birthdays">
+    <input type="hidden" name="tab" value="<%= tab %>">
+    <input type="text" name="search" placeholder="Search by name..." value="<%= search %>">
+    <input type="text" name="department" placeholder="Filter by department..." value="<%= department %>" style="max-width:200px">
+    <button type="submit" class="btn btn-primary">Filter</button>
+    <% if (search || department) { %>
+      <a href="/birthdays?tab=<%= tab %>" class="btn btn-secondary">Clear</a>
+    <% } %>
+  </form>
+
+  <div class="card">
+    <% if (birthdays.length === 0) { %>
+      <div class="empty-state">
+        <p>No birthdays found in this category.</p>
+      </div>
+    <% } else { %>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Member</th>
+              <th>Department</th>
+              <th>Date of Birth</th>
+              <th>Phone</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% birthdays.forEach(function(member) { %>
+              <tr>
+                <td>
+                  <a href="/members/<%= member._id %>" style="display: flex; align-items: center; gap: 0.75rem;">
+                    <% if (member.photo) { %>
+                      <img src="<%= member.photo %>" alt="<%= member.firstName %>" style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover;">
+                    <% } else { %>
+                      <div style="width: 36px; height: 36px; border-radius: 50%; background: #d4e4e8; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #1a3a5c;">
+                        <%= member.firstName.charAt(0) %><%= member.lastName.charAt(0) %>
+                      </div>
+                    <% } %>
+                    <%= member.firstName %> <%= member.lastName %>
+                  </a>
+                </td>
+                <td><%= member.department || '-' %></td>
+                <td>
+                  <strong><%= member.dateOfBirth.toLocaleDateString('en-US', { month: 'long', day: 'numeric' }) %></strong>
+                </td>
+                <td><%= member.phone || '-' %></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

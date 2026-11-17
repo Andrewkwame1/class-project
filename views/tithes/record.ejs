@@ -1,0 +1,109 @@
+<%- include('../partials/header', { title: 'Record Tithe', activePage: 'tithes' }) %>
+
+<div class="container">
+  <div class="tithe-verse">
+    <p class="tithe-verse-text">You shall be like a watered Garden</p>
+    <p class="tithe-verse-ref">Isaiah 58:11</p>
+  </div>
+
+  <div class="card-header">
+    <h2>Record Tithe</h2>
+    <a href="/tithes?year=<%= year %>" class="btn btn-secondary">← Back to Tithes</a>
+  </div>
+
+  <div class="card">
+    <% if (members.length === 0) { %>
+      <div class="empty-state">
+        <p>Add a member before recording tithe.</p>
+        <a href="/members/create" class="btn btn-primary">Add Member</a>
+      </div>
+    <% } else { %>
+      <form action="/tithes/record" method="POST">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Member *</label>
+            <select name="memberId" id="titheMember" required>
+              <option value="">-- Select member --</option>
+              <% members.forEach(function(member) { %>
+                <option
+                  value="<%= member._id %>"
+                  data-family="<%= member.family || '' %>"
+                  data-department="<%= member.department || '' %>"
+                  data-phone="<%= member.phone || '' %>"
+                  <%= selectedMember && String(selectedMember._id) === String(member._id) ? 'selected' : '' %>
+                >
+                  <%= member.lastName %>, <%= member.firstName %>
+                </option>
+              <% }) %>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Year *</label>
+            <select name="year" id="titheYear" required>
+              <% years.forEach(function(y) { %>
+                <option value="<%= y %>" <%= y === year ? 'selected' : '' %>><%= y %></option>
+              <% }) %>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Family (optional)</label>
+            <input type="text" name="family" id="titheFamily" placeholder="Family name" value="<%= selectedMember ? (selectedMember.family || '') : '' %>">
+          </div>
+          <div class="form-group">
+            <label>Department</label>
+            <input type="text" id="titheDepartment" value="<%= selectedMember ? (selectedMember.department || '') : '' %>" readonly>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Telephone</label>
+          <input type="text" id="tithePhone" value="<%= selectedMember ? (selectedMember.phone || '') : '' %>" readonly>
+        </div>
+
+        <h3 class="tithe-months-heading">Monthly amounts — <%= year %></h3>
+        <div class="tithe-months-grid">
+          <% monthKeys.forEach(function(key, index) { %>
+            <div class="form-group">
+              <label><%= monthLabels[index] %></label>
+              <input type="number" name="<%= key %>" min="0" step="0.01" value="<%= months[key] || '' %>" placeholder="0.00">
+            </div>
+          <% }) %>
+        </div>
+
+        <button type="submit" class="btn btn-success">Save Tithe</button>
+        <a href="/tithes?year=<%= year %>" class="btn btn-secondary">Cancel</a>
+      </form>
+    <% } %>
+  </div>
+</div>
+
+<script>
+  (function () {
+    var select = document.getElementById('titheMember');
+    var yearSelect = document.getElementById('titheYear');
+    if (!select) return;
+
+    function fillMemberFields() {
+      var option = select.options[select.selectedIndex];
+      document.getElementById('titheFamily').value = option.getAttribute('data-family') || '';
+      document.getElementById('titheDepartment').value = option.getAttribute('data-department') || '';
+      document.getElementById('tithePhone').value = option.getAttribute('data-phone') || '';
+    }
+
+    function reloadRecord() {
+      var memberId = select.value;
+      var year = yearSelect.value;
+      var url = '/tithes/record?year=' + encodeURIComponent(year);
+      if (memberId) url += '&member=' + encodeURIComponent(memberId);
+      window.location.href = url;
+    }
+
+    select.addEventListener('change', reloadRecord);
+    yearSelect.addEventListener('change', reloadRecord);
+  })();
+</script>
+
+<%- include('../partials/footer') %>

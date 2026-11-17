@@ -1,0 +1,89 @@
+<%- include('../partials/header', { title: 'Edit Announcement', activePage: 'announcements' }) %>
+
+<div class="container">
+  <div class="card-header">
+    <h2>Edit Announcement</h2>
+    <a href="/announcements" class="btn btn-secondary">← Back</a>
+  </div>
+
+  <div class="card">
+    <form action="/announcements/<%= announcement._id %>/edit" method="POST" enctype="multipart/form-data">
+      <div class="form-group">
+        <label>Title *</label>
+        <input type="text" name="title" value="<%= announcement.title %>" required>
+      </div>
+
+      <div class="form-group">
+        <label>Description *</label>
+        <textarea name="description" rows="5" required><%= announcement.description %></textarea>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Image / Flyer</label>
+          <input type="file" name="image" accept="image/*">
+          <% if (announcement.image) { %>
+            <small>Current: <a href="<%= announcement.image %>" target="_blank">View image</a></small>
+            <img src="<%= announcement.image %>" alt="Flyer" class="preview-img">
+          <% } %>
+        </div>
+        <div class="form-group">
+          <label>Announcement Date</label>
+          <input type="date" name="announcementDate" value="<%= announcement.announcementDate ? announcement.announcementDate.toISOString().split('T')[0] : '' %>">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Start Date</label>
+          <input type="date" name="startDate" value="<%= announcement.startDate ? announcement.startDate.toISOString().split('T')[0] : '' %>">
+        </div>
+        <div class="form-group">
+          <label>End Date</label>
+          <input type="date" name="endDate" value="<%= announcement.endDate ? announcement.endDate.toISOString().split('T')[0] : '' %>">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Audience</label>
+          <select name="audience" id="audienceSelect" class="audience-select">
+            <option value="Entire church" <%= announcement.audience === 'Entire church' ? 'selected' : '' %>>Entire church</option>
+            <option value="Men" <%= announcement.audience === 'Men' ? 'selected' : '' %>>Men</option>
+            <option value="Women" <%= announcement.audience === 'Women' ? 'selected' : '' %>>Women</option>
+            <option value="Youth" <%= announcement.audience === 'Youth' ? 'selected' : '' %>>Youth</option>
+            <option value="Children" <%= announcement.audience === 'Children' ? 'selected' : '' %>>Children</option>
+            <option value="Department" <%= announcement.audience === 'Department' ? 'selected' : '' %>>Specific Department</option>
+            <option value="Branch" <%= announcement.audience === 'Branch' ? 'selected' : '' %>>Specific Branch</option>
+          </select>
+        </div>
+        <div class="form-group audience-target-group" id="audienceTargetGroup" <%= ['Department','Branch'].includes(announcement.audience) ? '' : 'hidden' %>>
+          <label id="audienceTargetLabel"><%= announcement.audience === 'Branch' ? 'Branch Name' : 'Department Name' %></label>
+          <input type="text" name="audienceTarget" value="<%= announcement.audienceTarget || '' %>">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Status</label>
+          <select name="status">
+            <option value="active" <%= announcement.status === 'active' ? 'selected' : '' %>>Active</option>
+            <option value="scheduled" <%= announcement.status === 'scheduled' ? 'selected' : '' %>>Scheduled</option>
+            <option value="expired" <%= announcement.status === 'expired' ? 'selected' : '' %>>Expired</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group checkbox-row">
+        <input type="checkbox" name="isPinned" id="isPinned" <%= announcement.isPinned ? 'checked' : '' %>>
+        <label for="isPinned">Pin this important announcement</label>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Update Announcement</button>
+      <a href="/announcements" class="btn btn-secondary">Cancel</a>
+    </form>
+  </div>
+</div>
+
+<script src="/js/audience-select.js"></script>
+<%- include('../partials/footer') %>

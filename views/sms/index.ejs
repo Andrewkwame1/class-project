@@ -1,0 +1,89 @@
+<%- include('../partials/header', { title: 'SMS Alerts', activePage: 'sms' }) %>
+
+<div class="container">
+  <div class="card-header">
+    <h2>SMS Alerts</h2>
+    <a href="/sms/create" class="btn btn-primary">+ Create SMS Alert</a>
+  </div>
+
+  <form class="search-bar" method="GET" action="/sms">
+    <input type="text" name="search" placeholder="Search alerts..." value="<%= search %>">
+    <select name="audience" class="filter-dept">
+      <option value="">All Audiences</option>
+      <option value="Entire church" <%= audience === 'Entire church' ? 'selected' : '' %>>Entire church</option>
+      <option value="Men" <%= audience === 'Men' ? 'selected' : '' %>>Men</option>
+      <option value="Women" <%= audience === 'Women' ? 'selected' : '' %>>Women</option>
+      <option value="Youth" <%= audience === 'Youth' ? 'selected' : '' %>>Youth</option>
+      <option value="Children" <%= audience === 'Children' ? 'selected' : '' %>>Children</option>
+      <option value="Department" <%= audience === 'Department' ? 'selected' : '' %>>Department</option>
+      <option value="Branch" <%= audience === 'Branch' ? 'selected' : '' %>>Branch</option>
+    </select>
+    <select name="status" class="filter-dept">
+      <option value="">All Status</option>
+      <option value="draft" <%= status === 'draft' ? 'selected' : '' %>>Draft</option>
+      <option value="scheduled" <%= status === 'scheduled' ? 'selected' : '' %>>Scheduled</option>
+      <option value="sent" <%= status === 'sent' ? 'selected' : '' %>>Sent</option>
+    </select>
+    <button type="submit" class="btn btn-primary">Filter</button>
+    <% if (search || audience || status) { %>
+      <a href="/sms" class="btn btn-secondary">Clear</a>
+    <% } %>
+  </form>
+
+  <div class="card">
+    <% if (alerts.length === 0) { %>
+      <div class="empty-state">
+        <p>No SMS alerts found.</p>
+        <a href="/sms/create" class="btn btn-primary">Create Your First SMS Alert</a>
+      </div>
+    <% } else { %>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Audience</th>
+              <th>Message</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% alerts.forEach(function(alert) { %>
+              <tr>
+                <td><strong><%= alert.title %></strong></td>
+                <td>
+                  <%= alert.audience %>
+                  <% if (alert.audienceTarget) { %>
+                    <small>(<%= alert.audienceTarget %>)</small>
+                  <% } %>
+                </td>
+                <td><%= alert.message.length > 50 ? alert.message.substring(0, 50) + '...' : alert.message %></td>
+                <td>
+                  <span class="status-badge status-<%= alert.status === 'sent' ? 'active' : (alert.status === 'scheduled' ? 'scheduled' : 'expired') %>">
+                    <%= alert.status.charAt(0).toUpperCase() + alert.status.slice(1) %>
+                  </span>
+                </td>
+                <td>
+                  <div class="actions">
+                    <a href="/sms/<%= alert._id %>/edit" class="btn btn-sm btn-secondary">Edit</a>
+                    <% if (alert.status !== 'sent') { %>
+                      <form action="/sms/<%= alert._id %>/send" method="POST" class="inline-form" onsubmit="return confirm('Send this SMS alert now?')">
+                        <button type="submit" class="btn btn-sm btn-success">Send</button>
+                      </form>
+                    <% } %>
+                    <form action="/sms/<%= alert._id %>/delete" method="POST" class="inline-form" onsubmit="return confirm('Delete this SMS alert?')">
+                      <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

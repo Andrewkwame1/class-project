@@ -1,0 +1,69 @@
+<%- include('../partials/header', { title: 'Create Devotional', activePage: 'devotionals' }) %>
+
+<div class="container">
+  <div class="card-header">
+    <h2>Create Word to Go Devotional</h2>
+    <a href="/devotionals" class="btn btn-secondary">← Back</a>
+  </div>
+
+  <div class="card">
+    <form action="/devotionals/create" method="POST">
+      <div class="form-group">
+        <label>Title *</label>
+        <input type="text" name="title" placeholder="Devotional title" required>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Bible Verse / Reference</label>
+          <input type="text" name="bibleVerse" placeholder="e.g. John 3:16">
+        </div>
+        <div class="form-group">
+          <label>Author / Speaker</label>
+          <input type="text" name="author" placeholder="Author name">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Scripture Text</label>
+        <textarea name="scriptureText" rows="3" placeholder="Full text of the scripture..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Message / Devotional Content *</label>
+        <textarea name="message" rows="8" placeholder="Write the main devotional message here..." required></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Prayer</label>
+        <textarea name="prayer" rows="3" placeholder="A short prayer based on the devotional..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Reflection Question</label>
+        <textarea name="reflectionQuestion" rows="2" placeholder="Question for readers to ponder..."></textarea>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Publication Date</label>
+          <input type="date" name="publicationDate">
+        </div>
+        <div class="form-group">
+          <label>Scheduled Date</label>
+          <input type="date" name="scheduledDate">
+        </div>
+      </div>
+
+      <div class="form-group checkbox-row">
+        <input type="checkbox" name="isPublished" id="isPublished">
+        <label for="isPublished">Publish this devotional immediately</label>
+      </div>
+
+      <button type="submit" class="btn btn-success">Save Devotional</button>
+      <a href="/devotionals" class="btn btn-secondary">Cancel</a>
+    </form>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

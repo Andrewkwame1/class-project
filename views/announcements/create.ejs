@@ -1,0 +1,85 @@
+<%- include('../partials/header', { title: 'Create Announcement', activePage: 'announcements' }) %>
+
+<div class="container">
+  <div class="card-header">
+    <h2>Create Announcement</h2>
+    <a href="/announcements" class="btn btn-secondary">← Back</a>
+  </div>
+
+  <div class="card">
+    <form action="/announcements/create" method="POST" enctype="multipart/form-data">
+      <div class="form-group">
+        <label>Title *</label>
+        <input type="text" name="title" placeholder="Announcement title" required>
+      </div>
+
+      <div class="form-group">
+        <label>Description *</label>
+        <textarea name="description" rows="5" placeholder="Detailed description..." required></textarea>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Image / Flyer</label>
+          <input type="file" name="image" accept="image/*">
+        </div>
+        <div class="form-group">
+          <label>Announcement Date</label>
+          <input type="date" name="announcementDate">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Start Date (when visible)</label>
+          <input type="date" name="startDate">
+        </div>
+        <div class="form-group">
+          <label>End Date (when it expires)</label>
+          <input type="date" name="endDate">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Audience</label>
+          <select name="audience" id="audienceSelect" class="audience-select">
+            <option value="Entire church">Entire church</option>
+            <option value="Men">Men</option>
+            <option value="Women">Women</option>
+            <option value="Youth">Youth</option>
+            <option value="Children">Children</option>
+            <option value="Department">Specific Department</option>
+            <option value="Branch">Specific Branch</option>
+          </select>
+        </div>
+        <div class="form-group audience-target-group" id="audienceTargetGroup" hidden>
+          <label id="audienceTargetLabel">Target</label>
+          <input type="text" name="audienceTarget" placeholder="Enter name">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Status</label>
+          <select name="status">
+            <option value="active">Active</option>
+            <option value="scheduled">Scheduled</option>
+            <option value="expired">Expired</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group checkbox-row">
+        <input type="checkbox" name="isPinned" id="isPinned">
+        <label for="isPinned">Pin this important announcement</label>
+      </div>
+
+      <button type="submit" class="btn btn-success">Publish Announcement</button>
+      <a href="/announcements" class="btn btn-secondary">Cancel</a>
+    </form>
+  </div>
+</div>
+
+<script src="/js/audience-select.js"></script>
+<%- include('../partials/footer') %>

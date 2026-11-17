@@ -1,0 +1,75 @@
+<%- include('../partials/header', { title: 'Word to Go Devotionals', activePage: 'devotionals' }) %>
+
+<div class="container">
+  <div class="card-header">
+    <h2>Word to Go Devotionals</h2>
+    <a href="/devotionals/create" class="btn btn-primary">+ Create Devotional</a>
+  </div>
+
+  <form class="search-bar" method="GET" action="/devotionals">
+    <input type="text" name="search" placeholder="Search devotionals..." value="<%= search %>">
+    <select name="published" class="filter-dept">
+      <option value="">All Status</option>
+      <option value="yes" <%= published === 'yes' ? 'selected' : '' %>>Published</option>
+      <option value="no" <%= published === 'no' ? 'selected' : '' %>>Draft</option>
+    </select>
+    <button type="submit" class="btn btn-primary">Filter</button>
+    <% if (search || published) { %>
+      <a href="/devotionals" class="btn btn-secondary">Clear</a>
+    <% } %>
+  </form>
+
+  <div class="card">
+    <% if (devotionals.length === 0) { %>
+      <div class="empty-state">
+        <p>No devotionals found.</p>
+        <a href="/devotionals/create" class="btn btn-primary">Create Your First Devotional</a>
+      </div>
+    <% } else { %>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Bible Verse</th>
+              <th>Author</th>
+              <th>Status</th>
+              <th>Publication Date</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% devotionals.forEach(function(devotional) { %>
+              <tr>
+                <td><strong><%= devotional.title %></strong></td>
+                <td><%= devotional.bibleVerse || '-' %></td>
+                <td><%= devotional.author || '-' %></td>
+                <td>
+                  <span class="status-badge status-<%= devotional.isPublished ? 'active' : 'expired' %>">
+                    <%= devotional.isPublished ? 'Published' : 'Draft' %>
+                  </span>
+                </td>
+                <td><%= devotional.publicationDate ? devotional.publicationDate.toLocaleDateString() : '-' %></td>
+                <td>
+                  <div class="actions">
+                    <a href="/devotionals/<%= devotional._id %>" class="btn btn-sm btn-primary">View</a>
+                    <a href="/devotionals/<%= devotional._id %>/edit" class="btn btn-sm btn-secondary">Edit</a>
+                    <form action="/devotionals/<%= devotional._id %>/publish" method="POST" class="inline-form">
+                      <input type="hidden" name="action" value="<%= devotional.isPublished ? 'unpublish' : 'publish' %>">
+                      <button type="submit" class="btn btn-sm btn-secondary"><%= devotional.isPublished ? 'Unpublish' : 'Publish' %></button>
+                    </form>
+                    <form action="/devotionals/<%= devotional._id %>/delete" method="POST" class="inline-form" onsubmit="return confirm('Delete this devotional?')">
+                      <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>
